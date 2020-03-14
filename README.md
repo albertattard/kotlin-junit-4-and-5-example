@@ -54,7 +54,7 @@ class JUnit5TestPerMethodLifecycleTest {
 }
 ```
 
-While the annotation `@JvmStatic` may seem irrelevant, this add a subtle difference as explain in detail in the [Kotlin reference documentation](https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#static-methods)
+While the annotation `@JvmStatic` may seem irrelevant, this add a subtle difference as explain in detail in the [Kotlin reference documentation](https://kotlinlang.org/docs/reference/java-to-kotlin-interop.html#static-methods).
 
 The full example can be found at: [JUnit5TestPerMethodLifecycleTest.kt](src/test/kotlin/com/albertattard/junit/JUnit5TestPerMethodLifecycleTest.kt)
 
