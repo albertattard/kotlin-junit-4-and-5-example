@@ -36,11 +36,18 @@ configurations {
 dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
-    testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
-    testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.6.0")
-
+    /* JUnit 4*/
     testImplementation("junit:junit:4.13")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.0")
+
+    /* JUnit 5*/
+    testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
+
+    /* Ue JUnit 4 annotations with JUnit 5*/
+    testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.6.0")
+
+    /* Mockk */
+    testImplementation("io.mockk:mockk:1.9.3")
 }
 
 defaultTasks("clean", "ktlintFormat", "dependencyUpdates", "test")

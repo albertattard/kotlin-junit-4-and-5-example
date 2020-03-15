@@ -155,11 +155,118 @@ class JUnit5TestPerClassLifecycleTest {
 
 The full example can be found at: [JUnit5TestPerClassLifecycleTest.kt](src/test/kotlin/com/albertattard/junit/JUnit5TestPerClassLifecycleTest.kt).
 
-# Support:
+## Mockk
+
+[Mockk](https://mockk.io/) can be used by both JUnit 4 and JUnit 5.  The following fragment shows how this can be setup.
+
+```kotlin
+class HelloConsumerTest {
+
+  private val service = mockk<HelloService>("service")
+  private val consumer = HelloConsumer(service)
+
+  @Test
+  fun `should greet using the given name`() {
+    println("Mocked service identity ${System.identityHashCode(service)}")
+
+    val name = "Albert"
+    val greeting = "Hello $name"
+    every { service.greet(name) } returns greeting
+
+    val message = ByteArrayOutputStream().use { output ->
+      consumer.greet(name = name, output = output)
+      output.toByteArray().toString(Charsets.UTF_8)
+    }
+
+    assertEquals(greeting, message)
+
+    verify(exactly = 1) { service.greet(name) }
+  }
+
+  @Test
+  fun `should greet using the default name`() {
+    println("Mocked service identity ${System.identityHashCode(service)}")
+
+    val name = "Stranger"
+    val greeting = "Hello $name"
+    every { service.greet(name) } returns greeting
+
+    val out = ByteArrayOutputStream().use { output ->
+      consumer.greet(name = null, output = output)
+      output.toByteArray().toString(Charsets.UTF_8)
+    }
+
+    assertEquals(greeting, out)
+
+    verify(exactly = 1) { service.greet(name) }
+  }
+
+  /* Other methods removed for brevity */
+}
+```
+
+The full examples can be found at: [HelloConsumerJUnt4Test.kt](src/test/kotlin/com/albertattard/junit/HelloConsumerJUnt4Test.kt) and [HelloConsumerJUnt5Test.kt](src/test/kotlin/com/albertattard/junit/HelloConsumerJUnt5Test.kt) respectively.
+
+The mocked `service` and the `consumer`, the class under test, can be access within both test methods.  In JUnit 4, these are created for every test.  When using JUnit 4, two different mocks will be used as shown by the system object identity (obtained by `System.identityHashCode(service)` function).
+
+```bash
+Mocked service identity 1062635358
+Mocked service identity 1175631958
+```
+
+With JUnit 5, and the `Lifecycle.PER_CLASS`, the same mocked instance is reused instead.
+
+```bash
+Mocked service identity 1275035040
+Mocked service identity 1275035040
+```
+
+It is important to clear mocks in JUnit 5 so that each test function receives the mocks in a clear state and not contaminated with residue from previous tests.
+
+```kotlin
+    @BeforeEach
+    fun setUp() {
+        clearAllMocks()
+    }
+```
+
+This is not required with JUnit 4, as the test class is recreated for every test.
+
+Mockk runs faster with JUnit 5 when compared to JUnit 4, as shown by the following tests examples.
+
+Running just the JUnit 4 version of the test
+
+```bash
+$ ./gradlew clean test --tests "*HelloConsumerJUnt4Test"
+```
+
+The test produces values close to the following.
+
+| Test                                  | Duration | Result |
+| ------------------------------------- | -------: | ------ |
+| should greet using the given name     |   1.291s | passed |
+| should greet using the default name   |   0.004s | passed |
+
+Similarly, running the JUnit 5 version of the test
+
+```bash
+$ ./gradlew clean test --tests "*HelloConsumerJUnt5Test"
+```
+
+Produce better results.
+
+| Test                                  | Duration | Result |
+| ------------------------------------- | -------: | ------ |
+| should greet using the given name()   |   0.633s | passed |
+| should greet using the default name() |   0.006s | passed |
+
+Switching the mocks from class level to method level will make JUnit 5 run at the same speed as JUnit 4.
+
+## Support:
 1. [https://gitter.im/junit-team/junit5](https://gitter.im/junit-team/junit5)
 1. [https://github.com/junit-team/junit5-samples/tree/master/junit5-jupiter-starter-gradle-kotlin](https://github.com/junit-team/junit5-samples/tree/master/junit5-jupiter-starter-gradle-kotlin)
 1. [https://github.com/junit-team/junit5-samples/tree/master/junit5-migration-gradle](https://github.com/junit-team/junit5-samples/tree/master/junit5-migration-gradle)
 
-# Others:
+## Others:
 1. [Spock Framework](http://spockframework.org/)
 1. [Spek Framework](https://www.spekframework.org/)
