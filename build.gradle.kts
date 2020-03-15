@@ -37,6 +37,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
 
     testImplementation("org.junit.jupiter:junit-jupiter:5.6.0")
+    testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.6.0")
 
     testImplementation("junit:junit:4.13")
     testRuntimeOnly("org.junit.vintage:junit-vintage-engine:5.6.0")
