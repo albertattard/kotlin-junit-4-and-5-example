@@ -48,6 +48,7 @@ JUnit also allows the use of JUnit 4 annotations, such as `@Ignore`, together wi
 
 ```kts
 dependencies {
+  /* Ue JUnit 4 annotations with JUnit 5*/
   testImplementation("org.junit.jupiter:junit-jupiter-migrationsupport:5.6.0")
 }
 ```
@@ -64,7 +65,8 @@ class MigrateToJUnit5IgnoreOrDisabledTest {
     fail("should not run as it is ignored using JUnit 4 annotations")
   }
 
-  /* Other methods removed for brevity */}
+  /* Other methods removed for brevity */
+}
 ```
 
 The full example can be found at: [MigrateToJUnit5IgnoreOrDisabledTest.kt](src/test/kotlin/com/albertattard/junit/MigrateToJUnit5IgnoreOrDisabledTest.kt).
